@@ -1,0 +1,42 @@
+containers: {
+    app: {
+        image: "ghcr.io/randall-coding/crater"
+        ports: {
+            publish: ["8000/http"]
+        }
+        dirs: {
+            "/usr/local/etc/php/conf.d/uploads.ini": "./docker-compose/php/uploads.ini"
+        }
+        memory: 2Gi
+    }
+
+    db: {
+        image: "mariadb:10.6"
+        ports: {
+            expose: "3306/tcp"
+        }
+        dirs: {
+            "/var/lib/mysql": "mysqldata"
+        }
+        env: {
+            MYSQL_DATABASE: "crater"
+            MYSQL_USER: "crater"
+            MYSQL_PASSWORD: "secret://crater-mariadb/password"
+            MARIADB_ROOT_PASSWORD: "Password12345"
+        }
+    }
+
+    // nginx: {
+    //     image: "nginx:1.17-alpine"
+    //     ports: publish: "80/http"
+    //     dirs: {
+    //         "/var/www": "./"
+    //         "/etc/nginx/conf.d/": "./docker-compose/nginx"
+    //     }
+    // }
+}
+
+volumes: mysqldata: {
+    size: "1Gi"
+    accessModes: "readWriteOnce"
+}
